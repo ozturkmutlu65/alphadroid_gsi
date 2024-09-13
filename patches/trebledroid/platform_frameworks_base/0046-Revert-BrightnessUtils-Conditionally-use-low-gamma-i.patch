@@ -1,0 +1,59 @@
+From 254535a3b53d1e277e02e5dbbd7412050543ef60 Mon Sep 17 00:00:00 2001
+From: naz664 <nazimnavas145@gmail.com>
+Date: Thu, 15 Aug 2024 06:46:13 +0000
+Subject: [PATCH 46/49] Revert "BrightnessUtils: Conditionally use low gamma
+ implementation for brightness curve (#1072)"
+
+This reverts commit e098afbccce2d4222e0d00c5246178c1ae1be665.
+---
+ .../settingslib/display/BrightnessUtils.java      | 15 +++++----------
+ 1 file changed, 5 insertions(+), 10 deletions(-)
+
+diff --git a/packages/SettingsLib/DisplayUtils/src/com/android/settingslib/display/BrightnessUtils.java b/packages/SettingsLib/DisplayUtils/src/com/android/settingslib/display/BrightnessUtils.java
+index 68bb378b85b4..66ed10433459 100644
+--- a/packages/SettingsLib/DisplayUtils/src/com/android/settingslib/display/BrightnessUtils.java
++++ b/packages/SettingsLib/DisplayUtils/src/com/android/settingslib/display/BrightnessUtils.java
+@@ -16,18 +16,13 @@
+ 
+ package com.android.settingslib.display;
+ 
+-import android.os.SystemProperties;
+ import android.util.MathUtils;
+-import com.android.internal.display.BrightnessSynchronizer;
+ 
+ /** Utility methods for calculating the display brightness. */
+ public class BrightnessUtils {
+ 
+-    public static final boolean sysUseLowGamma = Boolean.parseBoolean(
+-        SystemProperties.get("persist.sys.brightness.low.gamma", "false"));
+-
+     public static final int GAMMA_SPACE_MIN = 0;
+-    public static final int GAMMA_SPACE_MAX = sysUseLowGamma ? 255 : 65535;
++    public static final int GAMMA_SPACE_MAX = 65535;
+ 
+     // Hybrid Log Gamma constant values
+     private static final float R = 0.5f;
+@@ -93,8 +88,9 @@ public class BrightnessUtils {
+         // it shouldn't be out of bounds.
+         final float normalizedRet = MathUtils.constrain(ret, 0, 12);
+ 
+-        return sysUseLowGamma ? MathUtils.constrain(BrightnessSynchronizer.brightnessIntToFloat(val),
+-                         min, max) : MathUtils.lerp(min, max, normalizedRet / 12);
++        // Re-normalize to the range [0, 1]
++        // in order to derive the correct setting value.
++        return MathUtils.lerp(min, max, normalizedRet / 12);
+     }
+ 
+     /**
+@@ -141,7 +137,6 @@ public class BrightnessUtils {
+             ret = A * MathUtils.log(normalizedVal - B) + C;
+         }
+ 
+-        return sysUseLowGamma ? BrightnessSynchronizer.brightnessFloatToInt(
+-                       MathUtils.constrain(val, min, max)) : Math.round(MathUtils.lerp(GAMMA_SPACE_MIN, GAMMA_SPACE_MAX, ret));
++        return Math.round(MathUtils.lerp(GAMMA_SPACE_MIN, GAMMA_SPACE_MAX, ret));
+     }
+ }
+-- 
+2.34.1
+

@@ -1,7 +1,7 @@
-From 2eb390f3b64100b13b0daabbe4621d0530276b8b Mon Sep 17 00:00:00 2001
+From 9f7556c6cfd607f6777913fb833902a464a2416a Mon Sep 17 00:00:00 2001
 From: Pierre-Hugues Husson <phh@phh.me>
 Date: Sat, 24 Mar 2018 08:01:48 +0100
-Subject: [PATCH 18/43] backlight: Fix backlight control on Galaxy S9(+)
+Subject: [PATCH 18/49] backlight: Fix backlight control on Galaxy S9(+)
 
 Change-Id: I1fbbb47939c377597ef8ad6b88b2acea5f4acaa6
 
@@ -53,7 +53,7 @@ Change-Id: I4e85178327d2bb63d5d0a37786058843662a89ba
  1 file changed, 46 insertions(+)
 
 diff --git a/services/core/java/com/android/server/lights/LightsService.java b/services/core/java/com/android/server/lights/LightsService.java
-index 4d26f433..c94d334b 100644
+index 76cf1348d313..39c4e361e00d 100644
 --- a/services/core/java/com/android/server/lights/LightsService.java
 +++ b/services/core/java/com/android/server/lights/LightsService.java
 @@ -32,6 +32,7 @@ import android.os.Looper;

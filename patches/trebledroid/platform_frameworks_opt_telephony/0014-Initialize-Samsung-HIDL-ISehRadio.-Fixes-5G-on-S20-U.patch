@@ -1,7 +1,7 @@
-From f17e78598aad5dd6af068cb588630001fbae85b7 Mon Sep 17 00:00:00 2001
+From 7a177873acd8d76d5964fbcdc86b600f1387a9fe Mon Sep 17 00:00:00 2001
 From: Pierre-Hugues Husson <phh@phh.me>
 Date: Wed, 21 Feb 2024 16:21:51 -0500
-Subject: [PATCH 14/15] Initialize Samsung HIDL ISehRadio. Fixes 5G on S20
+Subject: [PATCH 14/16] Initialize Samsung HIDL ISehRadio. Fixes 5G on S20
  Ultra
 
 ---
@@ -12,10 +12,10 @@ Subject: [PATCH 14/15] Initialize Samsung HIDL ISehRadio. Fixes 5G on S20
  4 files changed, 127 insertions(+), 4 deletions(-)
 
 diff --git a/Android.bp b/Android.bp
-index a0bd665..0985735 100644
+index 6e2c045bd1..2370555150 100644
 --- a/Android.bp
 +++ b/Android.bp
-@@ -83,6 +83,7 @@ java_library {
+@@ -82,6 +82,7 @@ java_library {
          "android.hardware.radio-V1.4-java",
          "android.hardware.radio-V1.5-java",
          "android.hardware.radio-V1.6-java",
@@ -24,18 +24,18 @@ index a0bd665..0985735 100644
          "android.hardware.radio.data-V3-java",
          "android.hardware.radio.ims-V2-java",
 diff --git a/src/java/com/android/internal/telephony/RIL.java b/src/java/com/android/internal/telephony/RIL.java
-index 3917045..3872162 100644
+index 82a3b583c5..b42f258044 100644
 --- a/src/java/com/android/internal/telephony/RIL.java
 +++ b/src/java/com/android/internal/telephony/RIL.java
-@@ -795,6 +795,7 @@ public class RIL extends BaseCommands implements CommandsInterface {
-                         + HIDL_SERVICE_NAME[mPhoneId] + " is disabled");
+@@ -810,6 +810,7 @@ public class RIL extends BaseCommands implements CommandsInterface {
+                 return null;
              } else {
                  IBinder binder;
 +                serviceProxy.setServiceName(HIDL_SERVICE_NAME[mPhoneId]);
                  switch (service) {
                      case HAL_SERVICE_DATA:
                          if (mMockModem == null) {
-@@ -853,7 +854,7 @@ public class RIL extends BaseCommands implements CommandsInterface {
+@@ -868,7 +869,7 @@ public class RIL extends BaseCommands implements CommandsInterface {
                              mHalVersion.put(service, ((RadioNetworkProxy) serviceProxy).setAidl(
                                      mHalVersion.get(service),
                                      android.hardware.radio.network.IRadioNetwork.Stub
@@ -45,7 +45,7 @@ index 3917045..3872162 100644
                          break;
                      case HAL_SERVICE_SIM:
 diff --git a/src/java/com/android/internal/telephony/RadioNetworkProxy.java b/src/java/com/android/internal/telephony/RadioNetworkProxy.java
-index 6acc90e..ed62374 100644
+index 6acc90ed63..ed623744ad 100644
 --- a/src/java/com/android/internal/telephony/RadioNetworkProxy.java
 +++ b/src/java/com/android/internal/telephony/RadioNetworkProxy.java
 @@ -32,6 +32,7 @@ import java.util.ArrayList;
@@ -213,7 +213,7 @@ index 6acc90e..ed62374 100644
       * Call IRadioNetwork#startNetworkScan
       * @param serial Serial number of request
 diff --git a/src/java/com/android/internal/telephony/RadioServiceProxy.java b/src/java/com/android/internal/telephony/RadioServiceProxy.java
-index 4257327..b3d43ea 100644
+index 4257327330..b3d43ea635 100644
 --- a/src/java/com/android/internal/telephony/RadioServiceProxy.java
 +++ b/src/java/com/android/internal/telephony/RadioServiceProxy.java
 @@ -83,4 +83,9 @@ public abstract class RadioServiceProxy {

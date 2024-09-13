@@ -1,7 +1,7 @@
-From a60b22109c53a8a9a5dc653a4e1cb97f02c23178 Mon Sep 17 00:00:00 2001
+From 10a98f8e087a3d429e8972eeb8d7a27baa8c91be Mon Sep 17 00:00:00 2001
 From: Pierre-Hugues Husson <phh@phh.me>
 Date: Tue, 18 Oct 2022 16:08:09 -0400
-Subject: [PATCH 4/5] Exfat can be mounted with "exfat" kernel fs driver, or
+Subject: [PATCH 7/7] Exfat can be mounted with "exfat" kernel fs driver, or
  "sdfat" or "texfat" (Samsung and Sony variants)
 
 @AndyCGYan: Adapt to LineageOS vold
@@ -13,7 +13,7 @@ Change-Id: I331e66d8cb37664adbd493b9190123e29f01fd9d
  2 files changed, 14 insertions(+), 2 deletions(-)
 
 diff --git a/Utils.cpp b/Utils.cpp
-index 5e719b6..e20f170 100644
+index d0c40ad..08c2bc4 100644
 --- a/Utils.cpp
 +++ b/Utils.cpp
 @@ -1059,6 +1059,11 @@ bool IsFilesystemSupported(const std::string& fsType) {
